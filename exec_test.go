@@ -95,6 +95,19 @@ ALTER TABLE _options_table SET OPTIONS();
 `,
 		},
 		{
+			name: "create schema",
+			query: `
+CREATE SCHEMA myschema;
+CREATE TABLE myschema.test_table (id INT64);
+`,
+		},
+		{
+			name: "create schema if not exists",
+			query: `
+CREATE SCHEMA IF NOT EXISTS myschema;
+`,
+		},
+		{
 			name: "transaction",
 			query: `
 CREATE OR REPLACE TABLE Inventory
