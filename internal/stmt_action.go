@@ -505,6 +505,39 @@ func (a *TruncateStmtAction) Cleanup(ctx context.Context, conn *Conn) error {
 	return nil
 }
 
+type CreateSchemaStmtAction struct {
+	namePath   []string
+	createMode ast.CreateMode
+	catalog    *Catalog
+}
+
+func (a *CreateSchemaStmtAction) Prepare(ctx context.Context, conn *Conn) (driver.Stmt, error) {
+	return nil, nil
+}
+
+func (a *CreateSchemaStmtAction) exec(ctx context.Context, conn *Conn) error {
+	a.catalog.AddSchema(a.namePath)
+	return nil
+}
+
+func (a *CreateSchemaStmtAction) ExecContext(ctx context.Context, conn *Conn) (driver.Result, error) {
+	if err := a.exec(ctx, conn); err != nil {
+		return nil, err
+	}
+	return &Result{conn: conn}, nil
+}
+
+func (a *CreateSchemaStmtAction) QueryContext(ctx context.Context, conn *Conn) (*Rows, error) {
+	if err := a.exec(ctx, conn); err != nil {
+		return nil, err
+	}
+	return &Rows{conn: conn}, nil
+}
+
+func (a *CreateSchemaStmtAction) Args() []interface{} { return nil }
+
+func (a *CreateSchemaStmtAction) Cleanup(ctx context.Context, conn *Conn) error { return nil }
+
 type AlterTableSetOptionsStmtAction struct{}
 
 func (a *AlterTableSetOptionsStmtAction) Prepare(ctx context.Context, conn *Conn) (driver.Stmt, error) {

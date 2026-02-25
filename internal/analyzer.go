@@ -95,6 +95,7 @@ func newAnalyzerOptions() (*zetasql.AnalyzerOptions, error) {
 		ast.CreateViewStmt,
 		ast.DropFunctionStmt,
 		ast.AlterTableSetOptionsStmt,
+		ast.CreateSchemaStmt,
 	})
 	// Enable QUALIFY without WHERE
 	// https://github.com/google/zetasql/issues/124
@@ -294,6 +295,8 @@ func (a *Analyzer) newStmtAction(ctx context.Context, query string, args []drive
 		return a.newCommitStmtAction(ctx, query, args, node)
 	case ast.AlterTableSetOptionsStmt:
 		return &AlterTableSetOptionsStmtAction{}, nil
+	case ast.CreateSchemaStmt:
+		return a.newCreateSchemaStmtAction(ctx, query, args, node.(*ast.CreateSchemaStmtNode))
 	}
 	return nil, fmt.Errorf("unsupported stmt %s", node.DebugString())
 }
@@ -542,6 +545,15 @@ func (a *Analyzer) newBeginStmtAction(ctx context.Context, query string, args []
 
 func (a *Analyzer) newCommitStmtAction(ctx context.Context, query string, args []driver.NamedValue, node ast.Node) (*CommitStmtAction, error) {
 	return &CommitStmtAction{}, nil
+}
+
+//nolint:unparam
+func (a *Analyzer) newCreateSchemaStmtAction(_ context.Context, _ string, _ []driver.NamedValue, node *ast.CreateSchemaStmtNode) (*CreateSchemaStmtAction, error) {
+	return &CreateSchemaStmtAction{
+		namePath:   a.namePath.mergePath(node.NamePath()),
+		createMode: node.CreateMode(),
+		catalog:    a.catalog,
+	}, nil
 }
 
 //nolint:unparam

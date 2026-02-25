@@ -187,6 +187,21 @@ func (c *Catalog) getFunctions(namePath *NamePath) []*FunctionSpec {
 	return specs
 }
 
+func (c *Catalog) AddSchema(namePath []string) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	cat := c.catalog
+	for _, part := range namePath {
+		existing, _ := cat.Catalog(part)
+		if existing == nil {
+			existing = newSimpleCatalog(part)
+			cat.AddCatalog(existing)
+		}
+		cat = existing
+	}
+}
+
 func (c *Catalog) Sync(ctx context.Context, conn *Conn) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
