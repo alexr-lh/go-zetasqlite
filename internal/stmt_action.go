@@ -505,6 +505,24 @@ func (a *TruncateStmtAction) Cleanup(ctx context.Context, conn *Conn) error {
 	return nil
 }
 
+type AlterTableSetOptionsStmtAction struct{}
+
+func (a *AlterTableSetOptionsStmtAction) Prepare(ctx context.Context, conn *Conn) (driver.Stmt, error) {
+	return nil, nil
+}
+
+func (a *AlterTableSetOptionsStmtAction) ExecContext(ctx context.Context, conn *Conn) (driver.Result, error) {
+	return &Result{conn: conn}, nil
+}
+
+func (a *AlterTableSetOptionsStmtAction) QueryContext(ctx context.Context, conn *Conn) (*Rows, error) {
+	return &Rows{conn: conn}, nil
+}
+
+func (a *AlterTableSetOptionsStmtAction) Args() []interface{} { return nil }
+
+func (a *AlterTableSetOptionsStmtAction) Cleanup(ctx context.Context, conn *Conn) error { return nil }
+
 type MergeStmtAction struct {
 	stmts []string
 }
