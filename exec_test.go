@@ -87,6 +87,14 @@ DROP VIEW IF EXISTS _view_a
 `,
 		},
 		{
+			name: "alter table set options",
+			query: `
+CREATE TABLE _options_table (id INT64, name STRING);
+ALTER TABLE _options_table SET OPTIONS(description='test table');
+ALTER TABLE _options_table SET OPTIONS();
+`,
+		},
+		{
 			name: "transaction",
 			query: `
 CREATE OR REPLACE TABLE Inventory

@@ -94,6 +94,7 @@ func newAnalyzerOptions() (*zetasql.AnalyzerOptions, error) {
 		ast.CreateTableFunctionStmt,
 		ast.CreateViewStmt,
 		ast.DropFunctionStmt,
+		ast.AlterTableSetOptionsStmt,
 	})
 	// Enable QUALIFY without WHERE
 	// https://github.com/google/zetasql/issues/124
@@ -291,6 +292,8 @@ func (a *Analyzer) newStmtAction(ctx context.Context, query string, args []drive
 		return a.newBeginStmtAction(ctx, query, args, node)
 	case ast.CommitStmt:
 		return a.newCommitStmtAction(ctx, query, args, node)
+	case ast.AlterTableSetOptionsStmt:
+		return &AlterTableSetOptionsStmtAction{}, nil
 	}
 	return nil, fmt.Errorf("unsupported stmt %s", node.DebugString())
 }
